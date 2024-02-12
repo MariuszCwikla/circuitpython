@@ -194,24 +194,19 @@ void usb_hid_set_devices(mp_obj_t devices) {
 //|
 STATIC mp_obj_t usb_hid_set_interface_name(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     static const mp_arg_t allowed_args[] = {
-        { MP_QSTR_interface_name, MP_ARG_OBJ, {.u_rom_obj = mp_const_none} }
+        { MP_QSTR_interface_name, MP_ARG_OBJ | MP_ARG_REQUIRED, {.u_rom_obj = mp_const_none} }
     };
     mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
     mp_arg_parse_all(n_args, pos_args, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, (mp_arg_val_t *)&args);
 
-    mp_buffer_info_t info;
-    if (args[0].u_obj != mp_const_none) {
-        mp_get_buffer_raise(args[0].u_obj, &info, MP_BUFFER_READ);
-        mp_arg_validate_length_range(info.len, 0, 126, MP_QSTR_interface_name);
-        memcpy(usb_hid_interface_name_obj.interface_name, info.buf, info.len);
-        usb_hid_interface_name_obj.interface_name[info.len] = 0;
-    } else {
-        //TODO: to jest do zmiany, bo USB_INTERFACE_NAME " HID" jest dwa razy
-        strcpy(usb_hid_interface_name_obj.interface_name, USB_INTERFACE_NAME " HID");
-    }
+    mp_buffer_info_t interface_name;
+    mp_get_buffer_raise(args[0].u_obj, &interface_name, MP_BUFFER_READ);
+    mp_arg_validate_length_range(interface_name.len, 1, 126, MP_QSTR_interface_name);
+    memcpy(usb_hid_interface_name_obj.interface_name, interface_name.buf, interface_name.len);
+    usb_hid_interface_name_obj.interface_name[interface_name.len] = 0;
 
     return mp_const_none;
 }
-MP_DEFINE_CONST_FUN_OBJ_KW(usb_hid_set_interface_name_obj, 0, usb_hid_set_interface_name);
+MP_DEFINE_CONST_FUN_OBJ_KW(usb_hid_set_interface_name_obj, 1, usb_hid_set_interface_name);
 
 MP_REGISTER_MODULE(MP_QSTR_usb_hid, usb_hid_module);
