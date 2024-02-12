@@ -155,30 +155,6 @@ STATIC mp_obj_t usb_hid_get_boot_device(void) {
 }
 MP_DEFINE_CONST_FUN_OBJ_0(usb_hid_get_boot_device_obj, usb_hid_get_boot_device);
 
-// usb_hid.devices is set once the usb devices are determined, after boot.py runs.
-STATIC mp_map_elem_t usb_hid_module_globals_table[] = {
-    { MP_ROM_QSTR(MP_QSTR___name__),        MP_OBJ_NEW_QSTR(MP_QSTR_usb_hid) },
-    { MP_ROM_QSTR(MP_QSTR_Device),          MP_OBJ_FROM_PTR(&usb_hid_device_type) },
-    { MP_ROM_QSTR(MP_QSTR_devices),         mp_const_none },
-    { MP_ROM_QSTR(MP_QSTR_disable),         MP_OBJ_FROM_PTR(&usb_hid_disable_obj) },
-    { MP_ROM_QSTR(MP_QSTR_enable),          MP_OBJ_FROM_PTR(&usb_hid_enable_obj) },
-    { MP_ROM_QSTR(MP_QSTR_get_boot_device), MP_OBJ_FROM_PTR(&usb_hid_get_boot_device_obj) },
-};
-
-STATIC MP_DEFINE_MUTABLE_DICT(usb_hid_module_globals, usb_hid_module_globals_table);
-
-const mp_obj_module_t usb_hid_module = {
-    .base = { &mp_type_module },
-    .globals = (mp_obj_dict_t *)&usb_hid_module_globals,
-};
-
-void usb_hid_set_devices(mp_obj_t devices) {
-    mp_map_elem_t *elem =
-        mp_map_lookup(&usb_hid_module_globals.map, MP_ROM_QSTR(MP_QSTR_devices), MP_MAP_LOOKUP);
-    if (elem) {
-        elem->value = devices;
-    }
-}
 
 //WIPMC
 //| def set_interface_name(
@@ -208,5 +184,31 @@ STATIC mp_obj_t usb_hid_set_interface_name(size_t n_args, const mp_obj_t *pos_ar
     return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_KW(usb_hid_set_interface_name_obj, 1, usb_hid_set_interface_name);
+
+// usb_hid.devices is set once the usb devices are determined, after boot.py runs.
+STATIC mp_map_elem_t usb_hid_module_globals_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___name__),        MP_OBJ_NEW_QSTR(MP_QSTR_usb_hid) },
+    { MP_ROM_QSTR(MP_QSTR_Device),          MP_OBJ_FROM_PTR(&usb_hid_device_type) },
+    { MP_ROM_QSTR(MP_QSTR_devices),         mp_const_none },
+    { MP_ROM_QSTR(MP_QSTR_disable),         MP_OBJ_FROM_PTR(&usb_hid_disable_obj) },
+    { MP_ROM_QSTR(MP_QSTR_enable),          MP_OBJ_FROM_PTR(&usb_hid_enable_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_boot_device), MP_OBJ_FROM_PTR(&usb_hid_get_boot_device_obj) },
+    { MP_ROM_QSTR(MP_QSTR_set_interface_name), MP_OBJ_FROM_PTR(&usb_hid_set_interface_name_obj) },
+};
+
+STATIC MP_DEFINE_MUTABLE_DICT(usb_hid_module_globals, usb_hid_module_globals_table);
+
+const mp_obj_module_t usb_hid_module = {
+    .base = { &mp_type_module },
+    .globals = (mp_obj_dict_t *)&usb_hid_module_globals,
+};
+
+void usb_hid_set_devices(mp_obj_t devices) {
+    mp_map_elem_t *elem =
+        mp_map_lookup(&usb_hid_module_globals.map, MP_ROM_QSTR(MP_QSTR_devices), MP_MAP_LOOKUP);
+    if (elem) {
+        elem->value = devices;
+    }
+}
 
 MP_REGISTER_MODULE(MP_QSTR_usb_hid, usb_hid_module);
