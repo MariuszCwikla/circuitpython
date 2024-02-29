@@ -156,9 +156,7 @@ STATIC mp_obj_t usb_hid_get_boot_device(void) {
 MP_DEFINE_CONST_FUN_OBJ_0(usb_hid_get_boot_device_obj, usb_hid_get_boot_device);
 
 
-//| def set_interface_name(
-//|     interface_name: str
-//| ) -> None:
+//| def set_interface_name(interface_name: str) -> None:
 //|     """Override HID interface name in the USB Interface Descriptor.
 //|
 //|     `interface_name` must be ASCII string (or buffers) of at most 126.
