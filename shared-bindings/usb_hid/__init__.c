@@ -177,8 +177,12 @@ STATIC mp_obj_t usb_hid_set_interface_name(size_t n_args, const mp_obj_t *pos_ar
     mp_buffer_info_t interface_name;
     mp_get_buffer_raise(args[0].u_obj, &interface_name, MP_BUFFER_READ);
     mp_arg_validate_length_range(interface_name.len, 1, 126, MP_QSTR_interface_name);
-    memcpy(usb_hid_interface_name_obj.interface_name, interface_name.buf, interface_name.len);
-    usb_hid_interface_name_obj.interface_name[interface_name.len] = 0;
+
+    if (custom_usb_hid_interface_name == NULL) {
+        custom_usb_hid_interface_name = port_malloc(sizeof(char) * 128, false);
+    }
+    memcpy(custom_usb_hid_interface_name, interface_name.buf, interface_name.len);
+    custom_usb_hid_interface_name[interface_name.len] = 0;
 
     return mp_const_none;
 }
